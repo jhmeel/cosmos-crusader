@@ -488,8 +488,7 @@ const Game: React.FC = () => {
       backgroundMusicRef.current.currentTime = 0;
       backgroundMusicRef.current.play();
     }
-  };v
-
+  };
   const getLifeIcon = (life: number) => {
     if (life > 75) return <BatteryFull />;
     if (life > 50) return <Battery80 />;

@@ -1,4 +1,4 @@
-import React, { useEffect,Suspense } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,7 +9,9 @@ import Marketplace from './pages/Market';
 import Onboarding from './pages/Onboarding';
 import toast, { useToasterStore } from 'react-hot-toast';
 import { initializeApp } from "firebase/app";
+import { WebApp } from 'telegram-web-app';
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAcWIJRXju9up-HyVsXges-Bk_DV2oVVnU",
   authDomain: "cosmos-crusader.firebaseapp.com",
@@ -25,7 +27,7 @@ initializeApp(firebaseConfig);
 const App: React.FC = () => {
   const { pathname } = useLocation();
   const { toasts } = useToasterStore();
-  
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -33,6 +35,7 @@ const App: React.FC = () => {
       behavior: "smooth",
     });
   }, [pathname]);
+
 
   useEffect(() => {
     if (!navigator.onLine) {
@@ -61,6 +64,7 @@ const App: React.FC = () => {
     }
   }, [pathname]);
 
+  // Handle toasts limit
   const TOAST_LIMIT = 1;
   useEffect(() => {
     toasts
@@ -69,22 +73,37 @@ const App: React.FC = () => {
       .forEach((t) => toast.dismiss(t.id));
   }, [toasts]);
 
+  // Telegram WebApp initialization
+  useEffect(() => {
+    const tg = WebApp;
+    tg.ready();
+
+
+     //console.log(tg.initDataUnsafe?.user);
+
+    tg.MainButton.setText('Start Now');
+    tg.MainButton.show();
+
+    //tg.MainButton.onClick(() => {
+     // toast(`Welcome, ${tg.initDataUnsafe?.user?.first_name}`);
+    //});
+
+    return () => {
+      tg.MainButton.offClick();
+    };
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Navigation />
       <Suspense fallback={<p>Loading...</p>}>
-      
         <Routes>
-  
-
-              <Route path="/game" element={<Game/>} />
-              <Route path="/marketplace" element={<Marketplace/>} />
-              <Route path="/" element={<Onboarding/>} />
-
-  
+          <Route path="/game" element={<Game />} />
+          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/" element={<Onboarding />} />
         </Routes>
-        </Suspense>
+      </Suspense>
     </ThemeProvider>
   );
 };
