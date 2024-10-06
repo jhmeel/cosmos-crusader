@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Box, Typography, Button, Card, CardContent } from '@mui/material';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { Box, Typography, Button, Card, CardContent } from "@mui/material";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const OnboardingContainer = styled(Box)`
   display: flex;
@@ -34,29 +35,34 @@ const Dot = styled.div<{ active: boolean }>`
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: ${props => (props.active ? '#ffbd44' : '#4a5568')};
+  background-color: ${(props) => (props.active ? "#ffbd44" : "#4a5568")};
   margin: 0 6px;
 `;
 
 const Onboarding: React.FC = () => {
   const [step, setStep] = useState(0);
+  const navigate = useNavigate();
 
   const steps = [
     {
       title: "Welcome to Cosmos Crusaders",
-      content: "Defend Planet Earth against incoming waves of asteroid invaders. Get ready to lead humanity's ultimate defense!",
+      content:
+        "Defend Planet Earth against incoming waves of asteroid invaders. Get ready to lead humanity's ultimate defense!",
     },
     {
       title: "Master the Cosmic Shields",
-      content: "Learn to deploy powerful shields to protect Earth from the devastating asteroid onslaught.",
+      content:
+        "Learn to deploy powerful shields to protect Earth from the devastating asteroid onslaught.",
     },
     {
       title: "Collect Celestial Energy",
-      content: "Earn energy as you block asteroids. Upgrade your shields and weaponry to fend off bigger threats.",
+      content:
+        "Earn energy as you block asteroids. Upgrade your shields and weaponry to fend off bigger threats.",
     },
     {
       title: "Prepare for Battle",
-      content: "Connect your control station, fine-tune your defense systems, and get ready for the cosmic showdown!",
+      content:
+        "Connect your control station, fine-tune your defense systems, and get ready for the cosmic showdown!",
     },
   ];
 
@@ -64,7 +70,7 @@ const Onboarding: React.FC = () => {
     if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
-      console.log("Onboarding complete");
+      navigate("/game");
     }
   };
 
@@ -79,13 +85,18 @@ const Onboarding: React.FC = () => {
       >
         <StyledCard>
           <CardContent>
-            <Typography variant="h4" gutterBottom sx={{ color: '#ffbd44' }}>
+            <Typography variant="h4" gutterBottom sx={{ color: "#ffbd44" }}>
               {steps[step].title}
             </Typography>
-            <Typography variant="body1" gutterBottom sx={{ color: '#e0e0e0' }}>
+            <Typography variant="body1" gutterBottom sx={{ color: "#e0e0e0" }}>
               {steps[step].content}
             </Typography>
-            <Button onClick={handleNext} variant="contained" color="primary" sx={{ mt: 2 }}>
+            <Button
+              onClick={handleNext}
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
               {step < steps.length - 1 ? "Next" : "Start Your Crusade"}
             </Button>
           </CardContent>

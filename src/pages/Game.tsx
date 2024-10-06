@@ -1,62 +1,70 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { styled } from '@mui/material/styles';
-import { Typography, Box, LinearProgress } from '@mui/material';
-import { Battery20, Battery50, Battery80, BatteryFull } from '@mui/icons-material';
-import Typewriter from 'typewriter-effect';
+import React, { useEffect, useRef, useState } from "react";
+import { styled } from "@mui/material/styles";
+import { Typography, Box, LinearProgress } from "@mui/material";
+import {
+  Battery20,
+  Battery50,
+  Battery80,
+  BatteryFull,
+} from "@mui/icons-material";
+import Typewriter from "typewriter-effect";
 
 const GameContainer = styled(Box)({
-  width: '100vw',
-  height: '100vh',
-  overflow: 'hidden',
-  background: '#191919',
-  position: 'relative',
+  width: "100vw",
+  height: "100vh",
+  overflow: "hidden",
+  background: "#191919",
+  position: "relative",
 });
 
-const GameCanvas = styled('canvas')({
-  background: 'url("https://marclopezavila.github.io/planet-defense-game/img/space.jpg") no-repeat center center',
-  backgroundSize: 'cover',
-  width: '100%',
-  height: '100%',
-  cursor: 'default',
-  '&.playing': {
-    cursor: 'url("https://marclopezavila.github.io/planet-defense-game/img/aim_red.png") 17.5 17.5, auto !important',
+const GameCanvas = styled("canvas")({
+  background:
+    'url("https://marclopezavila.github.io/planet-defense-game/img/space.jpg") no-repeat center center',
+  backgroundSize: "cover",
+  width: "100%",
+  height: "100%",
+  cursor: "default",
+  "&.playing": {
+    cursor:
+      'url("https://marclopezavila.github.io/planet-defense-game/img/aim_red.png") 17.5 17.5, auto !important',
   },
 });
 
 const IntroOverlay = styled(Box)({
-  position: 'absolute',
+  position: "absolute",
   top: 0,
   left: 0,
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  background: 'rgba(0, 0, 0, 0.7)',
-  color: 'white',
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  background: "linear-gradient(135deg, #0f1624 0%, #1b2836 100%)",
+  color: "white",
+  padding: "10px",
   zIndex: 10,
 });
 
 const StartButton = styled(Typography)({
-  cursor: 'pointer',
-  padding: '10px 20px',
-  border: '2px solid white',
-  borderRadius: '5px',
-  transition: 'all 0.3s',
-  '&:hover': {
-    background: 'white',
-    color: 'black',
+  cursor: "pointer",
+  padding: "10px 20px",
+  border: "2px solid white",
+  borderRadius: "5px",
+  transition: "all 0.3s",
+  "&:hover": {
+    background: "white",
+    color: "black",
   },
 });
 
 const LifeBar = styled(Box)({
-  position: 'absolute',
+  position: "absolute",
   top: 20,
   left: 20,
-  display: 'flex',
-  alignItems: 'center',
-  color: 'white',
+  display: "flex",
+  alignItems: "center",
+  color: "white",
 });
 
 const Game: React.FC = () => {
@@ -70,8 +78,7 @@ const Game: React.FC = () => {
     life: 100,
   });
 
-
- // Audio refs
+  // Audio refs
   const shootSoundRef = useRef<HTMLAudioElement | null>(null);
   const explosionSoundRef = useRef<HTMLAudioElement | null>(null);
   const gameOverSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -103,7 +110,7 @@ const Game: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     canvas.width = window.innerWidth;
@@ -111,8 +118,10 @@ const Game: React.FC = () => {
 
     const sprite = new Image();
     const spriteExplosion = new Image();
-    sprite.src = 'https://marclopezavila.github.io/planet-defense-game/img/sprite.png';
-    spriteExplosion.src = 'https://marclopezavila.github.io/planet-defense-game/img/explosion.png';
+    sprite.src =
+      "https://marclopezavila.github.io/planet-defense-game/img/sprite.png";
+    spriteExplosion.src =
+      "https://marclopezavila.github.io/planet-defense-game/img/explosion.png";
 
     let bullets: any[] = [];
     let asteroids: any[] = [];
@@ -131,7 +140,8 @@ const Game: React.FC = () => {
       deg: 0,
     };
 
-    const random = (from: number, to: number) => Math.floor(Math.random() * (to - from + 1)) + from;
+    const random = (from: number, to: number) =>
+      Math.floor(Math.random() * (to - from + 1)) + from;
 
     const action = (e: MouseEvent) => {
       e.preventDefault();
@@ -145,7 +155,10 @@ const Game: React.FC = () => {
           realY: e.offsetY,
           dirX: e.offsetX,
           dirY: e.offsetY,
-          deg: Math.atan2(e.offsetX - canvas.width / 2, -(e.offsetY - canvas.height / 2)),
+          deg: Math.atan2(
+            e.offsetX - canvas.width / 2,
+            -(e.offsetY - canvas.height / 2)
+          ),
           destroyed: false,
         };
         bullets.push(bullet);
@@ -153,7 +166,10 @@ const Game: React.FC = () => {
     };
 
     const move = (e: MouseEvent) => {
-      player.deg = Math.atan2(e.offsetX - canvas.width / 2, -(e.offsetY - canvas.height / 2));
+      player.deg = Math.atan2(
+        e.offsetX - canvas.width / 2,
+        -(e.offsetY - canvas.height / 2)
+      );
     };
 
     const fire = () => {
@@ -172,15 +188,15 @@ const Game: React.FC = () => {
             50,
             75,
             bullets[i].x,
-            bullets[i].y -= 20,
+            (bullets[i].y -= 20),
             19,
             30
           );
 
           ctx.restore();
 
-          bullets[i].realX = (0) - (bullets[i].y + 10) * Math.sin(bullets[i].deg);
-          bullets[i].realY = (0) + (bullets[i].y + 10) * Math.cos(bullets[i].deg);
+          bullets[i].realX = 0 - (bullets[i].y + 10) * Math.sin(bullets[i].deg);
+          bullets[i].realY = 0 + (bullets[i].y + 10) * Math.cos(bullets[i].deg);
 
           bullets[i].realX += canvas.width / 2;
           bullets[i].realY += canvas.height / 2;
@@ -189,42 +205,33 @@ const Game: React.FC = () => {
             if (!asteroids[j].destroyed) {
               distance = Math.sqrt(
                 Math.pow(asteroids[j].realX - bullets[i].realX, 2) +
-                Math.pow(asteroids[j].realY - bullets[i].realY, 2)
+                  Math.pow(asteroids[j].realY - bullets[i].realY, 2)
               );
 
-              if (distance < (((asteroids[j].width / asteroids[j].size) / 2) - 4) + ((19 / 2) - 4)) {
+              if (
+                distance <
+                asteroids[j].width / asteroids[j].size / 2 - 4 + (19 / 2 - 4)
+              ) {
                 destroyed += 1;
                 asteroids[j].destroyed = true;
                 bullets[i].destroyed = true;
                 explosions.push(asteroids[j]);
-
-
-        
               }
             }
           }
         }
       }
-
-      
-       
     };
 
     const drawPlanet = () => {
       ctx.save();
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = "white";
       ctx.shadowBlur = 100;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
       ctx.shadowColor = "#999";
 
-      ctx.arc(
-        (canvas.width / 2),
-        (canvas.height / 2),
-        100,
-        0,
-        Math.PI * 2
-      );
+      ctx.arc(canvas.width / 2, canvas.height / 2, 100, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -295,8 +302,11 @@ const Game: React.FC = () => {
         coordsX: coordsX,
         coordsY: coordsY,
         size: random(1, 3),
-        deg: Math.atan2(coordsX - (canvas.width / 2), -(coordsY - (canvas.height / 2))),
-        destroyed: false
+        deg: Math.atan2(
+          coordsX - canvas.width / 2,
+          -(coordsY - canvas.height / 2)
+        ),
+        destroyed: false,
       };
       asteroids.push(asteroid);
     };
@@ -317,36 +327,42 @@ const Game: React.FC = () => {
             asteroids[i].width,
             asteroids[i].height,
             -(asteroids[i].width / asteroids[i].size) / 2,
-            asteroids[i].moveY += 1 / (asteroids[i].size),
+            (asteroids[i].moveY += 1 / asteroids[i].size),
             asteroids[i].width / asteroids[i].size,
             asteroids[i].height / asteroids[i].size
           );
 
           ctx.restore();
 
-          asteroids[i].realX = (0) - (asteroids[i].moveY + ((asteroids[i].height / asteroids[i].size) / 2)) * Math.sin(asteroids[i].deg);
-          asteroids[i].realY = (0) + (asteroids[i].moveY + ((asteroids[i].height / asteroids[i].size) / 2)) * Math.cos(asteroids[i].deg);
+          asteroids[i].realX =
+            0 -
+            (asteroids[i].moveY + asteroids[i].height / asteroids[i].size / 2) *
+              Math.sin(asteroids[i].deg);
+          asteroids[i].realY =
+            0 +
+            (asteroids[i].moveY + asteroids[i].height / asteroids[i].size / 2) *
+              Math.cos(asteroids[i].deg);
 
           asteroids[i].realX += asteroids[i].coordsX;
           asteroids[i].realY += asteroids[i].coordsY;
 
           distance = Math.sqrt(
             Math.pow(asteroids[i].realX - canvas.width / 2, 2) +
-            Math.pow(asteroids[i].realY - canvas.height / 2, 2)
+              Math.pow(asteroids[i].realY - canvas.height / 2, 2)
           );
 
-          if (distance < (((asteroids[i].width / asteroids[i].size) / 2) - 4) + 100) {
+          if (distance < asteroids[i].width / asteroids[i].size / 2 - 4 + 100) {
             life -= 5;
             asteroids[i].destroyed = true;
             explosions.push(asteroids[i]);
-            setGameState(prev => ({ ...prev, life }));
+            setGameState((prev) => ({ ...prev, life }));
           }
         } else if (!asteroids[i].extinct) {
           explosion(asteroids[i]);
         }
       }
 
-      if (asteroids.length - destroyed < 10 + (Math.floor(destroyed / 6))) {
+      if (asteroids.length - destroyed < 10 + Math.floor(destroyed / 6)) {
         newAsteroid();
       }
     };
@@ -356,7 +372,8 @@ const Game: React.FC = () => {
       ctx.translate(asteroid.realX, asteroid.realY);
       ctx.rotate(asteroid.deg);
 
-      let spriteY, spriteX = 256;
+      let spriteY,
+        spriteX = 256;
       if (asteroid.state === 0) {
         spriteY = 0;
         spriteX = 0;
@@ -370,23 +387,27 @@ const Game: React.FC = () => {
         spriteY = 768;
       }
 
-      if (asteroid.state === 8 || asteroid.state === 16 || asteroid.state === 24) {
+      if (
+        asteroid.state === 8 ||
+        asteroid.state === 16 ||
+        asteroid.state === 24
+      ) {
         asteroid.stateX = 0;
       }
 
       ctx.drawImage(
         spriteExplosion,
-        asteroid.stateX += spriteX,
+        (asteroid.stateX += spriteX),
         spriteY,
         256,
         256,
-        - (asteroid.width / asteroid.size) / 2,
-        - (asteroid.height / asteroid.size) / 2,
+        -(asteroid.width / asteroid.size) / 2,
+        -(asteroid.height / asteroid.size) / 2,
         asteroid.width / asteroid.size,
         asteroid.height / asteroid.size
       );
       asteroid.state += 1;
-  if (asteroid.state === 1) {
+      if (asteroid.state === 1) {
         // Play explosion sound at the start of the explosion animation
         if (explosionSoundRef.current) {
           explosionSoundRef.current.currentTime = 0;
@@ -404,7 +425,7 @@ const Game: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (life <= 0) {
-        setGameState(prev => ({
+        setGameState((prev) => ({
           ...prev,
           gameOver: true,
           playing: false,
@@ -421,44 +442,58 @@ const Game: React.FC = () => {
 
         ctx.font = "20px Verdana";
         ctx.fillStyle = "white";
-        ctx.textBaseline = 'middle';
+        ctx.textBaseline = "middle";
         ctx.textAlign = "left";
-        ctx.fillText('Record: ' + record + '', 20, 30);
+        ctx.fillText("Record: " + record + "", 20, 30);
 
         ctx.font = "40px Verdana";
         ctx.fillStyle = "white";
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
-        ctx.textBaseline = 'middle';
-        ctx.strokeText('' + destroyed + '', canvas.width / 2, canvas.height / 2);
-        ctx.fillText('' + destroyed + '', canvas.width / 2, canvas.height / 2);
+        ctx.textBaseline = "middle";
+        ctx.strokeText(
+          "" + destroyed + "",
+          canvas.width / 2,
+          canvas.height / 2
+        );
+        ctx.fillText("" + destroyed + "", canvas.width / 2, canvas.height / 2);
       } else {
-        ctx.drawImage(sprite, 428, 12, 70, 70, canvas.width / 2 - 35, canvas.height / 2 - 35, 70, 70);
+        ctx.drawImage(
+          sprite,
+          428,
+          12,
+          70,
+          70,
+          canvas.width / 2 - 35,
+          canvas.height / 2 - 35,
+          70,
+          70
+        );
       }
 
       requestAnimationFrame(gameLoop);
     };
 
-    canvas.addEventListener('click', action);
-    canvas.addEventListener('mousemove', move);
-    window.addEventListener('resize', () => {
+    canvas.addEventListener("click", action);
+    canvas.addEventListener("mousemove", move);
+    window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
 
-    setGameState(prev => ({ ...prev, playing: true }));
+    setGameState((prev) => ({ ...prev, playing: true }));
     gameLoop();
 
     return () => {
-      canvas.removeEventListener('click', action);
-      canvas.removeEventListener('mousemove', move);
-      window.removeEventListener('resize', () => { });
+      canvas.removeEventListener("click", action);
+      canvas.removeEventListener("mousemove", move);
+      window.removeEventListener("resize", () => {});
     };
   }, [showIntro, gameState.playing, gameState.gameOver]);
 
   const startGame = () => {
     setShowIntro(false);
-    setGameState(prev => ({
+    setGameState((prev) => ({
       ...prev,
       playing: true,
       gameOver: false,
@@ -474,7 +509,7 @@ const Game: React.FC = () => {
   };
 
   const restartGame = () => {
-    setGameState(prev => ({
+    setGameState((prev) => ({
       ...prev,
       playing: true,
       gameOver: false,
@@ -501,14 +536,14 @@ const Game: React.FC = () => {
       {showIntro ? (
         <IntroOverlay>
           <Typography variant="h2" gutterBottom>
-            Welcome to Cosmos Crusade
+            Cosmos Crusade
           </Typography>
           <Typewriter
             options={{
               strings: [
-                'Defend your planet from incoming asteroids!',
-                'Use your mouse to aim and click to shoot.',
-                'How long can you protect Earth?',
+                "Defend your planet from incoming asteroids!",
+                "Use your mouse to aim and click to shoot.",
+                "How long can you protect Earth?",
               ],
               autoStart: true,
               loop: true,
@@ -522,13 +557,20 @@ const Game: React.FC = () => {
         </IntroOverlay>
       ) : (
         <>
-          <GameCanvas ref={canvasRef} className={gameState.playing ? 'playing' : ''} />
+          <GameCanvas
+            ref={canvasRef}
+            className={gameState.playing ? "playing" : ""}
+          />
           <LifeBar>
             {getLifeIcon(gameState.life)}
             <LinearProgress
               variant="determinate"
               value={gameState.life}
-              sx={{ width: 100, ml: 1, backgroundColor: 'rgba(255,255,255,0.3)' }}
+              sx={{
+                width: 100,
+                ml: 1,
+                backgroundColor: "rgba(255,255,255,0.3)",
+              }}
             />
           </LifeBar>
           {gameState.gameOver && (
