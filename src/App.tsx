@@ -3,13 +3,11 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './components/theme';
-import Game from './pages/Game';
-import Onboarding from './pages/Onboarding';
 import toast, { useToasterStore } from 'react-hot-toast';
 import { initializeApp } from "firebase/app";
-import 'telegram-web-app';
+import Home from './pages/Home';
 
-// Firebase config
+
 const firebaseConfig = {
   apiKey: "AIzaSyAcWIJRXju9up-HyVsXges-Bk_DV2oVVnU",
   authDomain: "cosmos-crusader.firebaseapp.com",
@@ -71,34 +69,14 @@ const App: React.FC = () => {
       .forEach((t) => toast.dismiss(t.id));
   }, [toasts]);
 
-  // Telegram WebApp initialization
-  useEffect(() => {
-    const tg = window?.Telegram?.WebApp;;
-    tg?.ready();
-
-
-     //console.log(tg.initDataUnsafe?.user);
-
-    tg?.MainButton.setText('Start Now');
-    tg?.MainButton.show();
-
-    //tg.MainButton.onClick(() => {
-     // toast(`Welcome, ${tg.initDataUnsafe?.user?.first_name}`);
-    //});
-
-    return () => {
-      tg?.MainButton.offClick();
-    };
-  }, []);
+ 
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
-          <Route path="/game" element={<Game />} />
-          <Route path="/" element={<Onboarding />} />
+          <Route path="/" element={<Home/>} />
         </Routes>
       </Suspense>
     </ThemeProvider>

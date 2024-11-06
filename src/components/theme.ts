@@ -52,10 +52,7 @@ const theme = createTheme({
           padding: '10px 20px',
           background: 'linear-gradient(45deg, #00ff9d 30%, #7000ff 90%)',
           boxShadow: '0 3px 5px 2px rgba(0, 255, 157, .3)',
-          color: '#000',
-          '&:hover': {
-            background: 'linear-gradient(45deg, #00ff9d 60%, #7000ff 90%)',
-          },
+          color: '#fff',
         },
       },
     },
