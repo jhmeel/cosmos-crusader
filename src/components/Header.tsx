@@ -1,148 +1,112 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  Badge,
-} from "@mui/material";
-import { Search, ShoppingCart } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
-import logo from "../assets/shopverse-main.png";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { Avatar, Badge } from "antd";
+import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
+import ProfileDrawer from "./ProfileDrawer";
 
-const HeaderContainer = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: "1rem",
-  backgroundColor: "#424242",
-  maxHeight: `80px`,
-  minWidth: `100%`,
-  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  position: `relative`,
-  gap: `20px`,
-});
-
-const Logo = styled(Typography)({
-  fontWeight: "bold",
-  fontSize: "1.5rem",
-  color: "#333",
-  display: "flex",
-  left: `-25px`,
-  [`@media (max-width: 600px)`]: {
-    left: `-36px`,
-  },
-  position: `absolute`,
-  alignItems: "center",
-  "& img": {
-    height: "auto",
-    width: `10rem`,
-  },
-});
-
-const SearchBar = styled(TextField)({
-  maxWidth: "250px",
-  [`@media (max-width: 600px)`]: {
-    maxWidth: "240px",
-  },
-  "& .MuiInputAdornment-positionEnd": {
-    marginRight: "0.5rem",
-  },
-});
-
-const CartIcon = styled(Box)({
-  position: "relative",
-  "& .MuiSvgIcon-root": {
-    fontSize: "1.5rem",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-  "& .cart-count": {
-    position: "absolute",
-    top: "-0.5rem",
-    right: "-0.5rem",
-    backgroundColor: "#ff4081",
-    color: "#fff",
-    borderRadius: "50%",
-    width: "1.2rem",
-    height: "1.2rem",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "0.8rem",
-    fontWeight: "bold",
-  },
-  "&.bounce": {
-    animation: "bounce 0.5s ease-in-out",
-    "@keyframes bounce": {
-      "0%": {
-        transform: "scale(1)",
-      },
-      "50%": {
-        transform: "scale(1.2)",
-      },
-      "100%": {
-        transform: "scale(1)",
-      },
-    },
-  },
-});
-
-const Header: React.FC<{
-  cart: { id: string; title: string; price: number; quantity: number }[];
-  onCartClick: () => void;
-}> = ({ cart, onCartClick }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [query, setQuery] = useState<string | null>(null);
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+interface HeaderProps {
+  user: {
+    name: string;
+    photoURL?: string;
+    role: string;
   };
+}
+
+const ResponsiveHeader: React.FC<HeaderProps> = ({ user }) => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
+
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    const scrollThreshold = 100;
+
+    setIsVisible(
+      currentScrollY <= scrollThreshold || currentScrollY < lastScrollY
+    );
+    setLastScrollY(currentScrollY);
+  }, [lastScrollY]);
 
   useEffect(() => {
-    setQuery("");
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.has("search")) {
-      searchParams.delete("search");
-      navigate({ search: searchParams.toString() }, { replace: true });
-    }
-  }, [navigate, location.search]);
-
-  useEffect(() => {
-    if (query !== null && query !== ``) {
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("search", query);
-      navigate({ search: searchParams.toString() }, { replace: true });
-    }
-  }, [query, location.search, navigate]);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
-    <HeaderContainer>
-      <Logo onClick={() => window.location.reload()}>
-        <img src={logo} alt="Shopverse" />
-      </Logo>
-      <SearchBar
-        variant="outlined"
-        size="small"
-        placeholder="Search products..."
-        onChange={handleInputChange}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <Search />
-            </InputAdornment>
-          ),
-        }}
+    <>
+      <header
+        className={`
+        fixed top-0 left-0 right-0 z-50 bg-white shadow-md 
+        transition-transform duration-300 ease-in-out
+        ${isVisible ? "translate-y-0" : "-translate-y-full"}
+      `}
+      >
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="flex items-center space-x-2">
+              <img
+                src="/logo.png"
+                alt="Company Logo"
+                className="h-8 w-8 rounded-full"
+              />
+              <span className="hidden md:block text-lg font-bold text-gray-800">
+                Shopverse
+              </span>
+            </Link>
+          </div>
+
+          {/* Search Input */}
+          <div className="flex-grow max-w-xl mx-4 hidden md:block">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search products"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="
+                w-full pl-10 pr-4 py-2 
+                border border-gray-300 rounded-full 
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+                bg-gray-100
+              "
+              />
+              <SearchOutlined
+                className="
+                absolute left-3 top-1/2 transform -translate-y-1/2 
+                text-gray-500
+              "
+              />
+            </div>
+          </div>
+
+          {/* Navigation Icons */}
+          <div className="flex items-center space-x-4">
+            <Link to="/notifications" className="relative">
+              <Badge count={5}>
+                <BellOutlined className="text-xl text-gray-700 hover:text-blue-600" />
+              </Badge>
+            </Link>
+
+            <Avatar
+              src={user?.photoURL}
+              icon={!user?.photoURL ? <UserOutlined /> : undefined}
+              onClick={() => setIsProfileDrawerOpen(true)}
+              className="cursor-pointer"
+            />
+          </div>
+        </div>
+      </header>
+
+      <ProfileDrawer
+        user={user}
+        isOpen={isProfileDrawerOpen}
+        onClose={() => setIsProfileDrawerOpen(false)}
       />
-      <CartIcon className="cart-icon" onClick={onCartClick}>
-        <Badge badgeContent={cart.length} color="error">
-          <ShoppingCart />
-        </Badge>
-      </CartIcon>
-    </HeaderContainer>
+    </>
   );
 };
 
-export default Header;
+export default ResponsiveHeader;

@@ -1,12 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing:border-box;
-}
-body {
-  font-family: 'Rajdhani', sans-serif;
-  background: #0a0e17;
-  color: #e0e0e0;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
